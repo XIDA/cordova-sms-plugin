@@ -65,18 +65,19 @@
     
     [self.viewController dismissViewControllerAnimated:YES completion:nil];
     
+    CDVPluginResult *pluginResult;
+    
     if (succeeded == YES) {
-        [super writeJavascript:[[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:message]
-                                toSuccessCallbackString:self.callbackID]];
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     } else {
         NSMutableDictionary* returnInfo = [NSMutableDictionary dictionaryWithCapacity:2];
         
         [returnInfo setObject:errorCode forKey:@"code"];
         [returnInfo setObject:message forKey:@"message"];
-        
-        [super writeJavascript:[[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnInfo]
-                                toErrorCallbackString:self.callbackID]];
+ 
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:returnInfo];
     }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackID];
 }
 
 @end
